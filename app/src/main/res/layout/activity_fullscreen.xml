@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0099cc"
+    tools:context=".FullscreenActivity">
+
+    <FrameLayout
+        android:id="@+id/fullscreen_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true"
+        android:fitsSystemWindows="true">
+
+        <LinearLayout
+            android:id="@+id/div_bottom"
+            style="?metaButtonBarStyle"
+            android:layout_gravity="bottom"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/div_extended"
+                style="?metaButtonBarStyle"
+                android:layout_gravity="right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/div_extended_bar"
+                    style="?metaButtonBarStyle"
+                    android:layout_gravity="bottom"
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="5dp"
+                    android:background="#7777">
+
+                    <ImageButton
+                        android:id="@+id/settings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/svg_settings" />
+
+                    <ImageButton
+                        android:id="@+id/hdr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/svg_hdr" />
+
+                    <ImageButton
+                        android:id="@+id/burst"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/svg_burst" />
+
+                    <ImageButton
+                        android:id="@+id/schedule"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/svg_schedule" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/menu_bar"
+                style="?metaButtonBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#7777"
+                tools:ignore="UselessParent">
+
+                <LinearLayout
+                    android:id="@+id/div_lib"
+                    style="?metaButtonBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true">
+
+                    <ImageButton
+                        android:id="@+id/camera_lib"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:background="@drawable/svg_lib" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/camera_options"
+                    style="?metaButtonBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true">
+
+                    <ImageButton
+                        android:id="@+id/colorization"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/svg_color" />
+
+                    <ImageButton
+                        android:id="@+id/iso"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/svg_iso" />
+
+                    <ImageButton
+                        android:id="@+id/camera_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/svg_camera" />
+
+                    <ImageButton
+                        android:id="@+id/aperture_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/svg_aperture" />
+
+                    <ImageButton
+                        android:id="@+id/focus_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/svg_focus" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/div_more"
+                    style="?metaButtonBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true">
+
+                    <ImageButton
+                        android:id="@+id/more"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/svg_more" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_gravity="center|top"
+            android:textAlignment="center"
+            android:text="G-Streamer version: " />
+
+    </FrameLayout>
+
+</FrameLayout>
