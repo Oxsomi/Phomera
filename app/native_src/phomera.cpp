@@ -2,7 +2,10 @@
 #include <string.h>
 #include <jni.h>
 #include <android/log.h>
+#include <android/native_window.h>
+#include <android/native_window_jni.h>
 #include <gst/gst.h>
+#include <gst/video/video.h>
 #include <unordered_map>
 
 //Managing our gstreamer thread
@@ -19,8 +22,9 @@ struct GSInstance {
 
     JNIEnv *env;
     jobject app;
+    ANativeWindow *surface;
     GMainLoop *mainLoop;
-    GstElement *pipeline;
+    GstElement *pipeline, *videoSink;
     pthread_t thread;
     jint version;
 
@@ -64,8 +68,9 @@ struct GSInstance {
         GError *error = nullptr;
 
         auto pipeline = gst_parse_launch(
-           "audiotestsrc ! audioconvert ! audioresample ! autoaudiosink",
-           //"udpsrc port=5000 ! application/x-rtp, payload=96 ! rtpjitterbuffer ! rtph264depay ! avdec_h264 ! fpsdisplaysink sync=false text-overlay=false",
+           //"audiotestsrc ! audioconvert ! audioresample ! autoaudiosink",
+           //"videotestsrc ! warptv ! videoconvert ! autovideosink",
+           "udpsrc port=5000 ! application/x-rtp, media=video, clock-rate=90000, encoding-name=H264 ! decodebin ! autovideosink sync=false",
            &error
         );
 
@@ -82,12 +87,21 @@ struct GSInstance {
             return nullptr;
         }
 
+        //Setup our surface
+
+        gst_element_set_state(inst->pipeline, GST_STATE_READY);
+
+        if (!(inst->videoSink = gst_bin_get_by_interface(GST_BIN(inst->pipeline), GST_TYPE_VIDEO_OVERLAY))) {
+            GST_ERROR("Could not get video sink");
+            return nullptr;
+        }
+
         //Attach callbacks to our bus
 
         GstBus *bus = gst_element_get_bus(pipeline);
         GSource *busSource = gst_bus_create_watch(bus);
 
-        g_source_set_callback(busSource, (GSourceFunc) gst_bus_async_signal_func, NULL, NULL);
+        g_source_set_callback(busSource, (GSourceFunc) gst_bus_async_signal_func, nullptr, nullptr);
         g_source_attach(busSource, context);
 
         g_signal_connect(G_OBJECT(bus), "message::error", (GCallback) busError, inst);
@@ -138,6 +152,8 @@ struct GSInstance {
 
         inst->mainLoop = nullptr;
 
+        gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(inst->videoSink), (guintptr) inst->surface);
+
         //Notify our UI thread that we can't take pictures anymore, our camera preview has stopped
 
         GST_DEBUG("Notifying UI thread for onGSUnready");
@@ -184,7 +200,7 @@ struct GSInstance {
         GSInstance *inst = new GSInstance{ env, app };
         inst->version = env->GetVersion();
 
-        pthread_create(&inst->thread, NULL, (PThreadFunc) &threadFunction, inst);
+        pthread_create(&inst->thread, nullptr, (PThreadFunc) &threadFunction, inst);
 
         return inst;
     }
@@ -198,7 +214,7 @@ struct GSInstance {
         g_main_loop_quit(mainLoop);
 
         GST_DEBUG("Waiting for thread to finish");
-        pthread_join(thread, NULL);
+        pthread_join(thread, nullptr);
 
         GST_DEBUG("Deleting GlobalRef for app object at %p", app);
         env->DeleteGlobalRef(app);
@@ -247,5 +263,49 @@ extern "C" {
         }
 
         return JNI_TRUE;
+    }
+
+    JNIEXPORT void Java_net_osomi_phomera_MainActivity_initSurface(JNIEnv *env, jobject thiz, jobject surface) {
+
+        if(!instance)
+            return;
+
+        ANativeWindow *window = ANativeWindow_fromSurface(env, surface);
+        GST_DEBUG("Performing surface update %p (native window %p)", surface, window);
+
+        if(instance->surface) {
+
+            ANativeWindow_release(instance->surface);
+
+            if(instance->surface == window && instance->videoSink) {
+                gst_video_overlay_expose(GST_VIDEO_OVERLAY(instance->videoSink));
+                gst_video_overlay_expose(GST_VIDEO_OVERLAY(instance->videoSink));       //Call it twice because of GLES double buffering
+                return;
+            }
+        }
+
+        instance->surface = window;
+
+        if(instance->mainLoop) {
+            gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(instance->videoSink), (guintptr) instance->surface);
+            gst_element_set_state(instance->pipeline, GST_STATE_PLAYING);
+        }
+    }
+
+    JNIEXPORT void Java_net_osomi_phomera_MainActivity_finalizeSurface(JNIEnv *env, jobject thiz) {
+
+        if(!instance)
+            return;
+
+        GST_DEBUG("Releasing native widndow %p", instance->surface);
+
+        if (instance->videoSink) {
+            gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(instance->videoSink), (guintptr) nullptr);
+            gst_element_set_state(instance->pipeline, GST_STATE_READY);
+        }
+
+        ANativeWindow_release(instance->surface);
+        instance->surface = nullptr;
+
     }
 }

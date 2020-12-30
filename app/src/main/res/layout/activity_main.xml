@@ -6,6 +6,11 @@
     android:background="#0099cc"
     tools:context=".MainActivity">
 
+    <SurfaceView
+        android:id="@+id/preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <FrameLayout
         android:id="@+id/fullscreen_content"
         android:layout_width="match_parent"
@@ -50,8 +55,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
-                        android:clickable="false"
-                        android:alpha="0.5"
                         android:background="@drawable/svg_hdr" />
 
                     <ImageButton
@@ -59,8 +62,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
-                        android:clickable="false"
-                        android:alpha="0.5"
                         android:background="@drawable/svg_burst" />
 
                     <ImageButton
@@ -68,8 +69,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
-                        android:clickable="false"
-                        android:alpha="0.5"
                         android:background="@drawable/svg_schedule" />
 
                 </LinearLayout>
@@ -112,8 +111,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
-                        android:clickable="false"
-                        android:alpha="0.5"
                         android:background="@drawable/svg_color" />
 
                     <ImageButton
@@ -121,8 +118,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
-                        android:clickable="false"
-                        android:alpha="0.5"
                         android:background="@drawable/svg_iso" />
 
                     <ImageButton
@@ -130,8 +125,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
-                        android:clickable="false"
-                        android:alpha="0.5"
                         android:background="@drawable/svg_camera" />
 
                     <ImageButton
@@ -139,16 +132,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
-                        android:clickable="false"
-                        android:alpha="0.5"
                         android:background="@drawable/svg_aperture" />
 
                     <ImageButton
                         android:id="@+id/focus_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:alpha="0.5"
                         android:background="@drawable/svg_focus" />
 
                 </LinearLayout>
@@ -181,6 +170,7 @@
             android:layout_gravity="center|top"
             android:gravity="center"
             android:textAlignment="center"
+            android:textColor="#2040c0"
             android:text="G-Streamer version" />
 
     </FrameLayout>
